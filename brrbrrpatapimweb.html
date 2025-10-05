@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBP Coin: Análisis y Gestión de Inversión</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <!-- Carga de Lucide Icons (para el ícono de copiar y salir) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Configuración de Tailwind y fuente Inter -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117; /* Fondo oscuro */
+            color: #c9d1d9; /* Texto claro */
+        }
+        /* Estilo para los botones de control de gráfico activos */
+        .chart-control.active {
+            background-color: #2563eb !important; /* blue-600 */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 sm:p-8">
+
+    <!-- Contenedor Principal -->
+    <div id="main-container" class="max-w-6xl mx-auto">
+        
+        <!-- 1. Sección de Acceso a la Plataforma -->
+        <section id="login-section" class="flex flex-col items-center justify-center min-h-[80vh] bg-gray-900 rounded-xl shadow-2xl p-8 max-w-lg mx-auto" role="dialog" aria-modal="true" aria-labelledby="login-title">
+            <h2 id="login-title" class="text-4xl font-extrabold text-teal-400 mb-6 border-b border-gray-700 pb-2">Acceso a la Plataforma BBP</h2>
+            <p class="text-gray-400 mb-8 text-center">Ingrese sus credenciales para acceder a la gestión de su portafolio de $BBP$ Coin.</p>
+            
+            <div class="w-full space-y-5">
+                <!-- Input de Nombre -->
+                <label for="input-name" class="block text-sm font-medium text-gray-300">Nombre Completo</label>
+                <input type="text" id="input-name" placeholder="Ej: John Doe" class="w-full p-4 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-blue-500 focus:border-blue-500 transition duration-150" required aria-label="Ingrese su nombre completo">
+
+                <!-- Input de RUT -->
+                <label for="input-rut" class="block text-sm font-medium text-gray-300">RUT</label>
+                <input type="text" id="input-rut" placeholder="Ej: 11.222.333-K" class="w-full p-4 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-blue-500 focus:border-blue-500 transition duration-150" required aria-label="Ingrese su RUT">
+                
+                <p id="login-message" class="text-center text-sm font-medium h-5" role="alert" aria-live="assertive"></p>
+
+                <!-- Botón de Acceso -->
+                <button id="login-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition duration-300 shadow-lg mt-4" aria-label="Acceder a la plataforma de gestión">
+                    Acceder a la Plataforma
+                </button>
+            </div>
+        </section>
+
+        <!-- Contenido Principal Visible por defecto (Inicialmente oculto) -->
+        <div id="content-container" class="space-y-12 mt-8 hidden">
+            
+            <!-- Encabezado de la Aplicación -->
+            <header class="flex justify-between items-center p-2 mb-4 bg-gray-900 rounded-lg shadow-xl" role="banner">
+                <h1 class="text-xl font-extrabold text-teal-400 px-2">Plataforma de Gestión de BBP Coin</h1>
+                
+                <!-- Info de Usuario y Botón de Salir -->
+                <div class="flex items-center space-x-4">
+                    <span id="user-info-display" class="text-sm text-gray-400"></span>
+                    <button id="logout-button" class="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition duration-200 shadow-md flex items-center space-x-2" aria-label="Cerrar sesión y volver a la pantalla de acceso">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                        <span class="hidden sm:inline">Salir</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- 2. Análisis Fundamental (Viralidad y Mercado) -->
+            <section id="introduction" class="bg-gray-800 p-6 sm:p-10 rounded-xl shadow-2xl" role="region" aria-label="Análisis Fundamental de BBP Coin">
+                <h2 class="text-3xl font-bold text-teal-400 mb-4 border-b border-gray-700 pb-2">$BBP$ Coin: De Activo Meme a Capital Millonario</h2>
+                <p class="mb-4 text-gray-300 leading-relaxed">
+                    La <strong>BBP Coin</strong> es un activo digital cuya valoración está intrínsecamente ligada al **interés de mercado y la exposición mediática** viral, más que a factores económicos tradicionales. Su historial de precios refleja el poder del *sentimiento* colectivo y la alta volatilidad.
+                </p>
+                <h3 class="text-2xl font-semibold text-gray-200 mb-3">Histórico de Volatilidad: Análisis de Agosto a Octubre</h3>
+                <ul class="list-disc list-inside space-y-3 text-gray-400" aria-label="Puntos clave de volatilidad histórica">
+                    <li>
+                        <strong class="text-yellow-400">Agosto (Lanzamiento):</strong> Valor inicial bajo. La adopción inicial, impulsada por tendencias virales ("Brainrot Italian"), propició una apreciación explosiva.
+                    </li>
+                    <li>
+                        <strong class="text-green-400">Agosto (Máximo Histórico):</strong> La máxima viralidad llevó el activo a un pico extremo de valoración por unidad, demostrando una capitalización extrema basada en la atención.
+                    </li>
+                    <li>
+                        <strong class="text-red-400">Septiembre (Corrección):</strong> La disminución del interés y la falta de noticias de utilidad causaron una fuerte corrección, estabilizando el valor en el **rango base**.
+                    </li>
+                    <li>
+                        <strong class="text-blue-400">Octubre (Proyección Estratégica):</strong> El mercado anticipa un próximo evento de alta exposición (anuncio de serie web), proyectando un incremento potencial al **máximo histórico**.
+                    </li>
+                </ul>
+            </section>
+
+            <!-- 3. Gráfico Histórico -->
+            <section id="chart-section" class="bg-gray-800 p-6 sm:p-10 rounded-xl shadow-2xl" role="region" aria-label="Gráfico Histórico del Valor de BBP">
+                <h2 class="text-3xl font-bold text-teal-400 mb-6 border-b border-gray-700 pb-2">Gráfico Histórico de Valor de $BBP$</h2>
+
+                <!-- Controles de Gráfico -->
+                <div class="flex flex-col sm:flex-row sm:justify-between gap-4 mb-6">
+                    <!-- Controles de Tipo -->
+                    <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Controles de Tipo de Gráfico">
+                        <span class="text-sm font-semibold text-gray-400">Tipo de Gráfico:</span>
+                        <button id="btn-bar" class="chart-control px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition duration-200 shadow-md active" aria-label="Mostrar Gráfico de Barras">Barras</button>
+                        <button id="btn-line" class="chart-control px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition duration-200 shadow-md" aria-label="Mostrar Gráfico de Líneas">Líneas</button>
+                        <button id="btn-doughnut" class="chart-control px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition duration-200 shadow-md" aria-label="Mostrar Gráfico Circular">Circular</button>
+                    </div>
+                    <!-- Controles de Escala -->
+                    <div class="flex flex-wrap items-center gap-2 mt-4 sm:mt-0" role="group" aria-label="Controles de Escala del Eje Y">
+                        <span class="text-sm font-semibold text-gray-400">Escala Y (Tiempo Real):</span>
+                        <button id="btn-log" class="scale-control px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-lg transition duration-200 shadow-md active" aria-label="Usar Escala Logarítmica">Logarítmica</button>
+                        <button id="btn-linear" class="scale-control px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-lg transition duration-200 shadow-md" aria-label="Usar Escala Lineal">Lineal</button>
+                    </div>
+                </div>
+
+                <div class="h-96">
+                    <canvas id="bbpChart" role="img" aria-label="Gráfico Histórico del Valor de BBP en USD"></canvas>
+                </div>
+            </section>
+            
+            <!-- 4. Registro y Gestión de Transacciones (Trading) -->
+            <section id="trading-section" class="bg-gray-800 p-6 sm:p-10 rounded-xl shadow-2xl" role="region" aria-label="Gestión de Transacciones de BBP">
+                <h2 class="text-3xl font-bold text-teal-400 mb-4 border-b border-gray-700 pb-2">Registro y Gestión de Transacciones de $BBP$</h2>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Estrategia de Inversión -->
+                    <div class="p-4 bg-gray-700 rounded-lg">
+                        <h3 class="text-xl font-semibold text-gray-200 mb-3">Estrategia Basada en Viralidad y Sentimiento del Mercado</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            La clave de $BBP$ es capitalizar el ciclo de la viralidad. Operar durante el **interés bajo** y ejecutar tomas de ganancia durante los **picos de exposición** mediática.
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 text-yellow-400 mt-3" aria-label="Puntos clave de la estrategia de trading">
+                            <li><strong class="text-white">Posición de Compra:</strong> Adquisición en el **rango base**, cuando el activo opera fuera del foco de atención.</li>
+                            <li><strong class="text-white">Toma de Ganancias:</strong> Venta estratégica durante los **picos de alta valoración**, activados por noticias relevantes.</li>
+                            <li><strong class="text-white">Advertencia de Volatilidad (75%):</strong> Existe una alta probabilidad constante de picos de alza. La **ventana de alta valoración** es efímera, haciendo la ejecución precisa esencial para la rentabilidad.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Portafolio e Indicadores Actuales -->
+                    <div class="p-4 bg-gray-700 rounded-lg">
+                        <h3 class="text-xl font-semibold text-gray-200 mb-3">Portafolio e Indicadores Actuales</h3>
+                        <div class="space-y-4">
+                            <!-- Capital Disponible con botón de Copiar -->
+                            <div class="bg-gray-800 p-4 rounded-lg shadow-inner flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-400">Capital Disponible (USD):</p>
+                                    <p id="capital-display" class="text-4xl font-extrabold text-green-400" aria-live="polite">$1,000.00</p>
+                                </div>
+                                <button id="copy-capital-btn" class="p-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition duration-200 shadow-md" aria-label="Copiar Capital Disponible">
+                                    <i data-lucide="clipboard" class="w-5 h-5 text-white"></i>
+                                </button>
+                            </div>
+                            <!-- BBP en Posesión con botón de Copiar -->
+                            <div class="bg-gray-800 p-4 rounded-lg shadow-inner flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-400">$BBP$ en Posesión:</p>
+                                    <p id="bbp-holding-display" class="text-4xl font-extrabold text-blue-400" aria-live="polite">0.0000</p>
+                                </div>
+                                <button id="copy-bbp-btn" class="p-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition duration-200 shadow-md" aria-label="Copiar Cantidad de BBP en Posesión">
+                                    <i data-lucide="clipboard" class="w-5 h-5 text-white"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 bg-gray-900 p-4 rounded-lg border-2 border-dashed border-yellow-500">
+                            <p class="text-sm text-yellow-400 mb-1">Valor Actual de $BBP$ (Mercado):</p>
+                            <p id="price-display" class="text-5xl font-extrabold text-yellow-500 transition-all duration-300" aria-live="polite">$4.00</p>
+                        </div>
+                        
+                        <div class="mt-6 flex flex-col space-y-3">
+                            <!-- Input modificado para compra en USD -->
+                            <label for="trade-value-input" class="block text-sm font-medium text-gray-300 mb-1">Monto de Operación (USD para Compra / Cantidad $BBP$ para Venta)</label>
+                            <input type="number" id="trade-value-input" placeholder="Ej: 100" value="100" min="1" class="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-blue-500 focus:border-blue-500 transition duration-150" aria-label="Monto de la operación de compra en USD o cantidad de BBP para venta" required>
+                            <p id="bbp-value-preview" class="text-sm font-medium text-blue-300 mt-2 h-5 text-right" aria-live="polite">0.0000 BBP (Monto estimado)</p>
+
+                            <div class="flex space-x-3 mt-4">
+                                <button id="buy-button" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition duration-300 shadow-lg" aria-label="Comprar BBP usando la cantidad ingresada en USD">Comprar $BBP$ (USD)</button>
+                                <button id="sell-button" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition duration-300 shadow-lg" aria-label="Vender la cantidad ingresada de BBP por USD">Vender $BBP$ (Cantidad)</button>
+                            </div>
+                        </div>
+                        <p id="trade-message" class="mt-4 text-center text-sm font-medium h-5" role="status" aria-live="assertive"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Precio Promedio Diario -->
+            <section id="average-price-section" class="bg-gray-800 p-6 sm:p-10 rounded-xl shadow-2xl" role="region" aria-label="Tabla de Valor Promedio Diario">
+                <h2 class="text-3xl font-bold text-teal-400 mb-6 border-b border-gray-700 pb-2">Valor Promedio Diario de $BBP$ (Histórico)</h2>
+                
+                <div class="max-h-96 overflow-y-auto pr-2">
+                    <table class="min-w-full divide-y divide-gray-700" role="table" aria-label="Tabla de Precios Promedio Diario Históricos">
+                        <thead>
+                            <tr class="bg-gray-700 sticky top-0">
+                                <th class="py-3 px-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" scope="col">Día</th>
+                                <th class="py-3 px-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" scope="col">Mes</th>
+                                <th class="py-3 px-4 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" scope="col">Precio Promedio (USD)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="daily-average-table-body" class="divide-y divide-gray-800">
+                            <!-- Los datos se insertarán aquí por JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script type="module">
+        // Mantener las importaciones de Firebase por requerimiento del entorno, pero no se usarán para persistencia.
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // =================================================================
+        // Variables Globales y Estado (No persistente)
+        // =================================================================
+        
+        let bbpChart;
+        let currentChartType = 'bar';
+        let currentScaleType = 'logarithmic';
+
+        // Variables de portafolio, inicializadas al iniciar sesión
+        let capital = 0; 
+        let bbpHolding = 0; 
+        let currentPrice = 4.00; 
+        let isSpiking = false;
+        let marketInterval; 
+
+        // Constantes del mercado
+        const PRICE_NORMAL_MIN = 3.00;
+        const PRICE_NORMAL_MAX = 5.00;
+        const PRICE_SPIKE_MIN = 300.00;
+        const PRICE_SPIKE_MAX = 1000.00;
+        const PROBABILITY_OF_SPIKE = 0.75; 
+        const INITIAL_CAPITAL = 1000;
+
+        const historicalData = {
+            labels: ['Agosto (Inicial)', 'Agosto (Máx. Histórico)', 'Septiembre (Corrección)', 'Octubre (Proyección)'],
+            values: [100, 1000000, 5, 10000000]
+        };
+        
+        let userName = null;
+        let userRUT = null;
+
+        // =================================================================
+        // 1. Lógica de Acceso
+        // =================================================================
+
+        /**
+         * Inicializa Firebase Firestore (solo para cumplir con la estructura del entorno).
+         */
+        function initializeFirebase() {
+            // El código de inicialización de Firebase/Firestore se mantiene para compatibilidad con el entorno,
+            // pero las funciones de persistencia de portafolio fueron eliminadas.
+            const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+            setLogLevel('error'); 
+            try {
+                const app = initializeApp(firebaseConfig);
+                const db = getFirestore(app);
+                console.log("Estructura de Firebase inicializada (no utilizada para persistencia de portafolio en esta versión).");
+            } catch (error) {
+                console.error("Error en la inicialización estructural de Firebase:", error);
+            }
+        }
+        
+        // Ejecutar la inicialización al cargar el módulo script
+        initializeFirebase();
+
+
+        /**
+         * Intenta realizar el acceso a la plataforma.
+         */
+        function handleLoginAccess() {
+            const nameInput = document.getElementById('input-name');
+            const rutInput = document.getElementById('input-rut');
+            const loginMessage = document.getElementById('login-message');
+
+            const name = nameInput.value.trim();
+            const rut = rutInput.value.trim();
+
+            loginMessage.className = 'text-center text-sm font-medium h-5';
+            loginMessage.textContent = '';
+
+            if (!name || !rut) {
+                loginMessage.textContent = 'Por favor, ingrese su Nombre y RUT.';
+                loginMessage.classList.add('text-yellow-400');
+                return;
+            }
+            
+            // Validación de RUT (solo formato básico, ya que no se usa para persistencia)
+            const rutRegex = /^\d{1,2}\.\d{3}\.\d{3}[-][0-9kK]$/;
+            if (!rutRegex.test(rut)) {
+                loginMessage.textContent = 'Formato de RUT no válido. Use el formato XX.XXX.XXX-X.';
+                loginMessage.classList.add('text-red-400');
+                return;
+            }
+
+            // Acceso exitoso: Establecer variables de sesión local
+            userRUT = rut;
+            userName = name;
+            
+            // Inicializar el portafolio (siempre comienza desde cero en cada sesión de acceso)
+            capital = INITIAL_CAPITAL;
+            bbpHolding = 0;
+            
+            // 1. Ocultar login, mostrar contenido principal
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('content-container').classList.remove('hidden');
+            
+            // 2. Actualizar UI y comenzar el mercado
+            updateDisplays();
+            startMarketUpdates();
+            document.getElementById('user-info-display').textContent = `Usuario: ${userName} (RUT: ${userRUT})`;
+            
+            // 3. Limpiar mensajes
+            loginMessage.textContent = '';
+        }
+
+        /**
+         * Cierra la sesión y restablece el estado.
+         */
+        function logout() {
+            if (marketInterval) clearInterval(marketInterval);
+
+            userRUT = null;
+            userName = null;
+            capital = 0;
+            bbpHolding = 0;
+            
+            // Ocultar contenido principal, mostrar acceso
+            document.getElementById('content-container').classList.add('hidden');
+            document.getElementById('login-section').classList.remove('hidden');
+            
+            // Restablecer inputs del acceso
+            document.getElementById('input-name').value = '';
+            document.getElementById('input-rut').value = '';
+            document.getElementById('login-message').textContent = '';
+            
+            showMessage('Acceso cerrado. ¡Vuelva pronto!', 'text-green-400', 3000);
+        }
+
+        // =================================================================
+        // 2. Lógica de Utilidad (Copiar al Portapapeles)
+        // =================================================================
+
+        /**
+         * Copia un valor de un elemento DOM al portapapeles.
+         */
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+
+            const textToCopy = element.textContent.replace('$', '').trim();
+
+            const tempInput = document.createElement('textarea');
+            tempInput.value = textToCopy;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                const msg = successful ? 'Copiado' : 'Fallo al copiar';
+                showMessage(`¡${msg}!`, 'text-blue-400', 1000);
+            } catch (err) {
+                console.error('Fallo al copiar texto: ', err);
+                showMessage('Fallo al copiar.', 'text-red-400', 1000);
+            }
+            
+            document.body.removeChild(tempInput);
+        }
+
+
+        // =================================================================
+        // 3. Lógica del Gráfico y Precio Promedio
+        // =================================================================
+
+        function initChart() {
+            if (bbpChart) bbpChart.destroy(); 
+            const ctx = document.getElementById('bbpChart').getContext('2d');
+            const data = { labels: historicalData.labels, datasets: [{ label: 'Valor de $BBP$ (USD)', data: historicalData.values, backgroundColor: ['#fcd34d', '#10b981', '#ef4444', '#3b82f6'], borderColor: '#93c5fd', borderWidth: 1, tension: 0.4 }] };
+            const config = { type: currentChartType, data: data, options: { responsive: true, maintainAspectRatio: false, scales: { y: { type: currentScaleType, title: { display: true, text: `Valor (USD) - Escala ${currentScaleType === 'logarithmic' ? 'Logarítmica' : 'Lineal'}`, color: '#c9d1d9' }, ticks: { color: '#c9d1d9', callback: function(value, index, values) { if (value >= 1000000) return '$' + (value / 1000000).toFixed(1) + 'M'; if (value >= 1000) return '$' + (value / 1000).toFixed(1) + 'k'; return '$' + value.toFixed(2); } } }, x: { ticks: { color: '#c9d1d9' }, grid: { color: '#2f3135' } } }, plugins: { legend: { labels: { color: '#c9d1d9' } } } } };
+            bbpChart = new Chart(ctx, config);
+            document.querySelectorAll('.chart-control').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.scale-control').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('btn-bar').classList.add('active');
+            document.getElementById('btn-log').classList.add('active');
+        }
+
+        function updateChartType(newType, button) {
+            if (!bbpChart || currentChartType === newType) return;
+            currentChartType = newType;
+            document.querySelectorAll('.chart-control').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            if (newType === 'doughnut') { 
+                bbpChart.options.scales.y.display = false; 
+                bbpChart.options.scales.x.display = false; 
+                bbpChart.options.aspectRatio = 1; 
+                bbpChart.data.datasets[0].backgroundColor = ['#fcd34d', '#10b981', '#ef4444', '#3b82f6']; 
+            } else { 
+                bbpChart.options.scales.y.display = true; 
+                bbpChart.options.scales.x.display = true; 
+                bbpChart.options.aspectRatio = 2; 
+                bbpChart.options.scales.y.type = currentScaleType; 
+                if (newType === 'line') { 
+                    bbpChart.data.datasets[0].backgroundColor = 'transparent'; 
+                    bbpChart.data.datasets[0].borderColor = '#3b82f6'; 
+                    bbpChart.data.datasets[0].pointBackgroundColor = '#3b82f6'; 
+                } else { 
+                    bbpChart.data.datasets[0].backgroundColor = ['#fcd34d', '#10b981', '#ef4444', '#3b82f6']; 
+                    bbpChart.data.datasets[0].borderColor = '#93c5fd'; 
+                } 
+            }
+            bbpChart.config.type = newType;
+            bbpChart.update();
+        }
+
+        function updateChartScale(newScaleType, button) {
+            if (!bbpChart || currentScaleType === newScaleType || currentChartType === 'doughnut') return;
+            currentScaleType = newScaleType;
+            document.querySelectorAll('.scale-control').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            bbpChart.options.scales.y.type = newScaleType;
+            bbpChart.options.scales.y.title.text = `Valor (USD) - Escala ${newScaleType === 'logarithmic' ? 'Logarítmica' : 'Lineal'}`;
+            bbpChart.update();
+        }
+
+        function generateDailyAverages() {
+            const data = [];
+            const currentDate = new Date();
+            const startMonth = 8; 
+            const currentMonth = currentDate.getMonth() + 1; 
+            for (let m = startMonth; m <= currentMonth; m++) {
+                const year = 2024; 
+                const daysInMonth = new Date(year, m, 0).getDate();
+                const monthNames = ['Agosto', 'Septiembre', 'Octubre'];
+                const monthName = monthNames[m - 8];
+                let daysToGenerate = daysInMonth;
+                if (m === currentMonth) { daysToGenerate = currentDate.getDate(); }
+                for (let d = 1; d <= daysToGenerate; d++) {
+                    let avgPrice;
+                    const dayIndex = d; 
+                    if (m === 8) { 
+                        const multiplier = Math.pow(1000000, dayIndex / daysInMonth);
+                        avgPrice = 100 * (multiplier / 2); 
+                    } else if (m === 9) { 
+                        const start = 500000;
+                        const end = 5;
+                        const decay = 1 - (dayIndex / daysInMonth);
+                        avgPrice = (start * decay) + (end * (1 - decay));
+                        avgPrice = Math.max(avgPrice, 5); 
+                    } else if (m === 10) { 
+                        avgPrice = 5 + (Math.random() * 0.5 - 0.25); 
+                    }
+                    data.push({ day: d, month: monthName, price: avgPrice });
+                }
+            }
+            return data;
+        }
+
+        function displayDailyAverages() {
+            const dailyData = generateDailyAverages();
+            const tbody = document.getElementById('daily-average-table-body');
+            tbody.innerHTML = ''; 
+            dailyData.forEach(item => {
+                const row = tbody.insertRow();
+                row.className = 'hover:bg-gray-700 transition duration-150';
+                const cellDay = row.insertCell(); cellDay.textContent = item.day; cellDay.className = 'py-2 px-4 whitespace-nowrap text-sm font-medium text-gray-300';
+                const cellMonth = row.insertCell(); cellMonth.textContent = item.month; cellMonth.className = 'py-2 px-4 whitespace-nowrap text-sm text-gray-400';
+                const cellPrice = row.insertCell(); cellPrice.textContent = `$${item.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                cellPrice.className = `py-2 px-4 whitespace-nowrap text-sm font-bold ${item.price > 10000 ? 'text-green-400' : (item.price > 10 ? 'text-yellow-400' : 'text-red-400')}`;
+            });
+        }
+
+
+        // =================================================================
+        // 4. Lógica de Trading y Mercado
+        // =================================================================
+
+        function updateDisplays() {
+            document.getElementById('capital-display').textContent = `$${capital.toFixed(2)}`;
+            document.getElementById('bbp-holding-display').textContent = bbpHolding.toFixed(4);
+            
+            const priceDisplay = document.getElementById('price-display');
+            priceDisplay.textContent = `$${currentPrice.toFixed(2)}`;
+
+            if (currentPrice >= PRICE_SPIKE_MIN) {
+                priceDisplay.classList.add('text-red-500', 'animate-pulse');
+                priceDisplay.classList.remove('text-yellow-500');
+            } else {
+                priceDisplay.classList.remove('text-red-500', 'animate-pulse');
+                priceDisplay.classList.add('text-yellow-500');
+            }
+        }
+
+        function getRandomPrice(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function updatePrice() {
+            // 75% de probabilidad de alta volatilidad (picos en alza)
+            if (Math.random() < PROBABILITY_OF_SPIKE) { 
+                // Inicia la alta volatilidad (Pico)
+                isSpiking = true;
+                currentPrice = getRandomPrice(PRICE_SPIKE_MIN, PRICE_SPIKE_MAX);
+                updateDisplays();
+                calculateBBPValue(); 
+                showMessage(`¡ALERTA DE VOLATILIDAD EXTREMA! Precio: $${currentPrice.toFixed(2)}. ¡VENTA ESTRATÉGICA RECOMENDADA!`, 'text-red-400', 1000);
+
+                // El pico dura 1 segundo
+                setTimeout(() => {
+                    isSpiking = false;
+                    currentPrice = getRandomPrice(PRICE_NORMAL_MIN, PRICE_NORMAL_MAX);
+                    updateDisplays();
+                    calculateBBPValue(); 
+                    showMessage(`Mercado normalizado. Precio: $${currentPrice.toFixed(2)}`, 'text-blue-400', 3000);
+                }, 1000); 
+
+            } else {
+                // 25% de probabilidad de mercado base (o si acaba de terminar un pico)
+                if (!isSpiking) {
+                    currentPrice = getRandomPrice(PRICE_NORMAL_MIN, PRICE_NORMAL_MAX);
+                    updateDisplays();
+                    calculateBBPValue(); 
+                }
+            }
+        }
+
+
+        function startMarketUpdates() {
+            updateDisplays();
+            calculateBBPValue(); 
+            if (marketInterval) clearInterval(marketInterval);
+            marketInterval = setInterval(updatePrice, 1000);
+        }
+
+        function showMessage(msg, colorClass, duration = 2000) {
+            const messageElement = document.getElementById('trade-message');
+            messageElement.textContent = msg;
+            messageElement.className = `mt-4 text-center text-sm font-medium h-5 ${colorClass}`;
+            setTimeout(() => {
+                messageElement.textContent = '';
+                messageElement.className = `mt-4 text-center text-sm font-medium h-5`;
+            }, duration);
+        }
+
+        /**
+         * Previsualiza la cantidad de BBP a recibir (Compra en USD).
+         */
+        function calculateBBPValue() {
+            const usdAmount = parseFloat(document.getElementById('trade-value-input').value);
+            const bbpPreviewElement = document.getElementById('bbp-value-preview');
+
+            if (isNaN(usdAmount) || usdAmount <= 0) {
+                bbpPreviewElement.textContent = '0.0000 BBP (Monto estimado)';
+                return;
+            }
+
+            const bbpAmount = usdAmount / currentPrice;
+            bbpPreviewElement.textContent = `${bbpAmount.toFixed(4)} BBP (Monto estimado al precio actual)`;
+        }
+
+        // =================================================================
+        // 5. Lógica de Ejecución (Comprar/Vender)
+        // =================================================================
+
+        function buyBBP() {
+            if (!userName) {
+                showMessage('Debe iniciar sesión para realizar transacciones.', 'text-red-400');
+                return;
+            }
+
+            const amountInput = document.getElementById('trade-value-input');
+            const usdAmount = parseFloat(amountInput.value);
+
+            if (isNaN(usdAmount) || usdAmount <= 0) {
+                showMessage('Ingrese un monto válido de USD para la operación de compra.', 'text-yellow-400');
+                return;
+            }
+
+            const bbpAmount = usdAmount / currentPrice;
+
+            if (usdAmount > capital) {
+                showMessage(`¡Capital insuficiente! Requerido: $${usdAmount.toFixed(2)} USD.`, 'text-red-400');
+                return;
+            }
+
+            // Actualizar estado local (NO se usa Firestore, solo variables de sesión)
+            capital -= usdAmount;
+            bbpHolding += bbpAmount;
+            
+            updateDisplays();
+            showMessage(`Compra exitosa: Adquirió ${bbpAmount.toFixed(4)} $BBP$ por $${usdAmount.toFixed(2)} USD.`, 'text-green-400');
+            calculateBBPValue(); 
+        }
+
+        function sellBBP() {
+            if (!userName) {
+                showMessage('Debe iniciar sesión para realizar transacciones.', 'text-red-400');
+                return;
+            }
+
+            const amountInput = document.getElementById('trade-value-input');
+            // Para la venta, el input es la CANTIDAD DE BBP a vender.
+            const amountToSell = parseFloat(amountInput.value); 
+
+            if (isNaN(amountToSell) || amountToSell <= 0) {
+                showMessage('Ingrese una cantidad válida de $BBP$ para la operación de venta.', 'text-yellow-400');
+                return;
+            }
+
+            // Asegura que no se venda más de lo que se tiene (lógica de trading)
+            const amount = Math.min(amountToSell, bbpHolding);
+
+            if (amount === 0) {
+                 showMessage('Posición insuficiente: No hay $BBP$ para vender.', 'text-red-400');
+                 return;
+            }
+
+            const revenue = amount * currentPrice;
+
+            // Actualizar estado local (NO se usa Firestore, solo variables de sesión)
+            bbpHolding -= amount;
+            capital += revenue;
+            
+            updateDisplays();
+            showMessage(`Venta exitosa: Ganancia de $${revenue.toFixed(2)} USD por ${amount.toFixed(4)} $BBP$.`, 'text-green-400');
+            calculateBBPValue(); 
+        }
+
+        
+        // =================================================================
+        // 6. Event Listeners y Inicialización Automática
+        // =================================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initChart();
+            displayDailyAverages();
+
+            // Botón de Acceso
+            document.getElementById('login-button')?.addEventListener('click', handleLoginAccess);
+            
+            // Botón de Cierre de Sesión
+            document.getElementById('logout-button')?.addEventListener('click', logout);
+
+
+            // Input Handlers
+            document.getElementById('trade-value-input')?.addEventListener('input', calculateBBPValue);
+
+            // Trading Buttons
+            document.getElementById('buy-button')?.addEventListener('click', buyBBP);
+            document.getElementById('sell-button')?.addEventListener('click', sellBBP);
+
+            // Copy Buttons
+            document.getElementById('copy-capital-btn')?.addEventListener('click', () => copyToClipboard('capital-display'));
+            document.getElementById('copy-bbp-btn')?.addEventListener('click', () => copyToClipboard('bbp-holding-display'));
+
+
+            // Chart Controls
+            document.getElementById('btn-bar')?.addEventListener('click', function() { updateChartType('bar', this); });
+            document.getElementById('btn-line')?.addEventListener('click', function() { updateChartType('line', this); });
+            document.getElementById('btn-doughnut')?.addEventListener('click', function() { updateChartType('doughnut', this); });
+            document.getElementById('btn-log')?.addEventListener('click', function() { updateChartScale('logarithmic', this); });
+            document.getElementById('btn-linear')?.addEventListener('click', function() { updateChartScale('linear', this); });
+        });
+    </script>
+</body>
+</html>
